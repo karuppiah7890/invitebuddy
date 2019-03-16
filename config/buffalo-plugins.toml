@@ -5,3 +5,7 @@
 [[plugin]]
   binary = "buffalo-pop"
   go_get = "github.com/gobuffalo/buffalo-pop"
+
+[[plugin]]
+  binary = "buffalo-heroku"
+  go_get = "github.com/gobuffalo/buffalo-heroku"
