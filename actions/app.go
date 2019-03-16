@@ -8,8 +8,10 @@ import (
 	"github.com/unrolled/secure"
 
 	"github.com/gobuffalo/buffalo-pop/pop/popmw"
+	gwa "github.com/gobuffalo/gocraft-work-adapter"
 	contenttype "github.com/gobuffalo/mw-contenttype"
 	"github.com/gobuffalo/x/sessions"
+	"github.com/gomodule/redigo/redis"
 	"github.com/karuppiah7890/invitebuddy/models"
 	"github.com/rs/cors"
 )
@@ -41,6 +43,18 @@ func App() *buffalo.App {
 				cors.Default().Handler,
 			},
 			SessionName: "_invitebuddy_session",
+			Worker: gwa.New(gwa.Options{
+				Pool: &redis.Pool{
+					MaxActive: 5,
+					MaxIdle:   5,
+					Wait:      true,
+					Dial: func() (redis.Conn, error) {
+						return redis.Dial("tcp", "localhost:6379")
+					},
+				},
+				Name:           "myapp",
+				MaxConcurrency: 25,
+			}),
 		})
 
 		// Automatically redirect to SSL
@@ -57,7 +71,7 @@ func App() *buffalo.App {
 		// Remove to disable this.
 		app.Use(popmw.Transaction(models.DB))
 
-		app.GET("/", HomeHandler)
+		app.POST("/invite/send", SendInviteHandler)
 	}
 
 	return app
