@@ -3,10 +3,10 @@ package mailers
 import (
 	"log"
 
+	"github.com/gobuffalo/buffalo/mail"
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr/v2"
-	"github.com/gobuffalo/buffalo/mail"
 )
 
 var smtp mail.Sender
@@ -28,8 +28,8 @@ func init() {
 	}
 
 	r = render.New(render.Options{
-    HTMLLayout: "layout.html",
+		HTMLLayout:   "layout.html",
 		TemplatesBox: packr.New("app:mailers:templates", "../templates/mail"),
-    Helpers: render.Helpers{},
+		Helpers:      render.Helpers{},
 	})
 }
