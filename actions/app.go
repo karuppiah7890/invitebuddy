@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"fmt"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 	forcessl "github.com/gobuffalo/mw-forcessl"
@@ -36,6 +38,8 @@ var app *buffalo.App
 // declared after it to never be called.
 func App() *buffalo.App {
 	if app == nil {
+		redisHost := envy.Get("REDIS_HOST", "localhost")
+		redisPort := envy.Get("REDIS_PORT", "6379")
 		app = buffalo.New(buffalo.Options{
 			Env:          ENV,
 			SessionStore: sessions.Null{},
@@ -49,7 +53,7 @@ func App() *buffalo.App {
 					MaxIdle:   5,
 					Wait:      true,
 					Dial: func() (redis.Conn, error) {
-						return redis.Dial("tcp", "localhost:6379")
+						return redis.Dial("tcp", fmt.Sprintf("%s:%s", redisHost, redisPort))
 					},
 				},
 				Name:           "myapp",
