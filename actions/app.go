@@ -50,7 +50,7 @@ func App() *buffalo.App {
 					MaxIdle:   5,
 					Wait:      true,
 					Dial: func() (redis.Conn, error) {
-						return redis.Dial("tcp", redisURL)
+						return redis.DialURL(redisURL)
 					},
 				},
 				Name:           "myapp",
